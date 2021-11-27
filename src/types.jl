@@ -14,7 +14,7 @@ struct HaarGate{N,M} <: AbstractGate
     idcs::NTuple{M,Int}
 
     lb::SpinBasis{1//2,Int64}
-    gb::CompositeBasis{Vector{Int},NTuple{SpinBasis{1//2,Int64}}}
+    gb::CompositeBasis{Vector{Int},NTuple{N,SpinBasis{1//2,Int64}}}
 
     H::Matrix{ComplexF64}
 
@@ -56,7 +56,7 @@ Row of gates.
 """
 struct RowGate{N} <: AbstractGate
     lb::SpinBasis{1//2,Int64}
-    gb::CompositeBasis{Vector{Int},NTuple{SpinBasis{1//2,Int64}}}
+    gb::CompositeBasis{Vector{Int},NTuple{N,SpinBasis{1//2,Int64}}}
 
     H::Matrix{ComplexF64}
 
