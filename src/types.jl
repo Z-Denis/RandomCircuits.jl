@@ -10,13 +10,13 @@ abstract type AbstractGate end
 
 Random unitary gate.
 """
-struct HaarGate{N,M} <: AbstractGate
+struct HaarGate{N,M,T<:AbstractMatrix{ComplexF64}} <: AbstractGate
     idcs::NTuple{M,Int}
 
     lb::SpinBasis{1//2,Int64}
     gb::CompositeBasis{Vector{Int},NTuple{N,SpinBasis{1//2,Int64}}}
 
-    H::Matrix{ComplexF64}
+    H::T
 
     dt::Float64
     T::Float64
@@ -27,15 +27,16 @@ end
 
 Construct a random `HaarGate` on the `i_1`th to `i_M`-th qubits of a `N`-qubit circuit.
 """
-function HaarGate(idcs::NTuple{M,Int}, N::Int64; dt=missing) where M
+function HaarGate(idcs::NTuple{M,Int}, N::Int64; dt=missing, lb=SpinBasis(1//2)) where M
     @assert length(idcs) <= N
     lb = SpinBasis(1//2)
     gb = SpinBasis(1//2)^N
-    T = spectral_width(length(g.lb)^length(idcs))
+    T = spectral_width(length(lb)^length(idcs))
     dt = ismissing(dt) ? 5e-2T : dt
 
-    U = rand(CUE(length(g.lb)^length(idcs)))
-    H = im*log(U) / g.T
+    U = rand(CUE(length(lb)^length(idcs)))
+    lH = DenseOperator(lb^M, im*log(U) / T)
+    H  = embed(gb, collect(idcs), lH).data
 
     HaarGate(idcs, lb, gb, H, dt, T)
 end
@@ -54,11 +55,11 @@ hamiltonian(g::HaarGate) = g.H
 
 Row of gates.
 """
-struct RowGate{N} <: AbstractGate
+struct RowGate{N,T<:AbstractMatrix{ComplexF64}} <: AbstractGate
     lb::SpinBasis{1//2,Int64}
     gb::CompositeBasis{Vector{Int},NTuple{N,SpinBasis{1//2,Int64}}}
 
-    H::Matrix{ComplexF64}
+    H::T
 
     dt::Float64
     T::Float64
@@ -72,7 +73,7 @@ function RowGate(gs::AbstractArray{G}) where G <: AbstractGate
     H = mapreduce(hamiltonian, +, gs)
     dt = minimum(map(g->g.dt, gs))
 
-    RowGate(lb, gb, H, dt, T)
+    RowGate(first(gs).lb, first(gs).gb, H, dt, first(gs).T)
 end
 
 """
