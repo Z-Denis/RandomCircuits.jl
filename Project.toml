@@ -1,0 +1,13 @@
+name = "RandomCircuits"
+uuid = "d9d4f186-17fb-42c2-b712-1e587668a7d6"
+authors = ["Zakari Denis", "Kaelan Donatella", "Laboratoire MPQ"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
