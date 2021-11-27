@@ -36,7 +36,7 @@ function HaarGate(idcs::NTuple{M,Int}, N::Int64; dt=missing, lb=SpinBasis(1//2))
 
     U = rand(CUE(length(lb)^length(idcs)))
     lH = DenseOperator(lb^M, im*log(U) / T)
-    H  = embed(gb, collect(idcs), lH).data
+    H  = embed(gb, sort(collect(idcs)), lH).data
 
     HaarGate(idcs, lb, gb, H, dt, T)
 end
