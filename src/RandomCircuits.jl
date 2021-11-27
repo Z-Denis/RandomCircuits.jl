@@ -1,5 +1,6 @@
 module RandomCircuits
 
-# Write your package code here.
+include("types.jl")
+export AbstractGate, HaarGate, hamiltonian, RowGate, generate_random_circuit
 
 end
