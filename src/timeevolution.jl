@@ -53,7 +53,7 @@ function time_evolution(L0::ElasticMatrix, circuit::AbstractArray, J::AbstractAr
     h = circuit[i_g].dt     # Current timestep
 
     # "kraus" operators (K_i = sqrt(h) * k_i)
-    ks = map(j -> j.data, J)
+    ks = eltype(J) <: AbstractOperator ? map(j -> j.data, J) : J
 
     # Compute the non-Hermitian term of the Hamiltonian
     nh_term = zero(first(ks))
